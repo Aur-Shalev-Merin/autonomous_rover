@@ -1,0 +1,15 @@
+<launch>
+  <!-- Run octomap server -->
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+    <!-- Set the frame IDs correctly -->
+    <param name="frame_id" value="map" />
+    <param name="resolution" value="0.05" />
+    
+    <!-- Input pointcloud from ORB-SLAM2 -->
+    <remap from="cloud_in" to="/orb_slam2_mono/map_points" />
+    
+    <!-- Output 2D projected map for navigation -->
+    <param name="height_map" value="true" />
+    <param name="colored_map" value="false" />
+  </node>
+</launch>

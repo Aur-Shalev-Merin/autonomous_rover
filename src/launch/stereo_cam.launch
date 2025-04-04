@@ -1,0 +1,29 @@
+<launch>
+  <!-- Left camera -->
+  <node name="usb_cam_left" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="camera_left" />
+    <param name="io_method" value="mmap"/>
+    <param name="camera_name" value="left_camera" />
+  </node>
+  
+  <!-- Right camera -->
+  <node name="usb_cam_right" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video1" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="camera_right" />
+    <param name="io_method" value="mmap"/>
+    <param name="camera_name" value="right_camera" />
+  </node>
+  
+  <!-- TF transforms for stereo setup -->
+  <node pkg="tf" type="static_transform_publisher" name="left_to_right" 
+        args="0.065 0 0 0 0 0 camera_left camera_right 100" />
+  <node pkg="tf" type="static_transform_publisher" name="left_to_base" 
+        args="0 0 0 0 0 0 camera_left base_link 100" />
+</launch>
