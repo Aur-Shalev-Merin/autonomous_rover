@@ -1,0 +1,16 @@
+<launch>
+  <!-- Static transform from map to camera (with unique name) -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_cam_tf" 
+        args="0 0 0 0 0 0 map usb_cam 100" />
+  
+  <!-- Run octomap server -->
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+    <param name="resolution" value="0.05" />
+    <param name="frame_id" type="string" value="map" />
+    <param name="sensor_model/max_range" value="5.0" />
+    <param name="latch" value="true" />
+    <param name="pointcloud_min_z" value="0.1" />
+    <param name="pointcloud_max_z" value="1.0" />
+    <remap from="cloud_in" to="/orb_slam2/map_points" />
+  </node>
+</launch>

@@ -1,0 +1,28 @@
+<launch>
+  <!-- Start ORB-SLAM2 -->
+  <include file="$(find orb_slam2_ros)/ros/launch/test_webcam.launch" />
+  
+  <!-- Start Octomap -->
+  <include file="$(find rover_navigation)/launch/slam_octomap.launch" />
+  
+  <!-- Static transform from camera to base_link -->
+  <node pkg="tf" type="static_transform_publisher" name="camera_to_base" 
+        args="0 0 0.1 0 0 0 usb_cam base_link 100" />
+  
+  <!-- Run move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <remap from="map" to="/projected_map" />
+    <param name="controller_frequency" value="5.0" />
+    <rosparam file="$(find rover_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find rover_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find rover_navigation)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find rover_navigation)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find rover_navigation)/config/base_local_planner_params.yaml" command="load" />
+  </node>
+  
+  <!-- Run rosserial for Arduino communication -->
+  <node name="serial_node" pkg="rosserial_python" type="serial_node.py">
+    <param name="port" value="/dev/ttyACM0"/>
+    <param name="baud" value="57600"/>
+  </node>
+</launch>
